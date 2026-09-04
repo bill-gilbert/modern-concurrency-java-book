@@ -10,13 +10,14 @@ import java.util.stream.IntStream;
 public class LittleLawExample {
 
     public static void main(String[] args) {
-        int numTasks = 10000; // ①
-        int avgResponseTimeMillis = 500; // Average task response time // ②
+        int numTasks = 10000; // 1
+        int avgResponseTimeMillis = 500; // Среднее время отклика // 2
 
         // Simulate adjustable I/O-bound work
         Runnable ioBoundTask = () -> {
             try {
-                Thread.sleep(Duration.ofMillis(avgResponseTimeMillis)); // ③
+                // имитирует блокирующие операции ввода-вывода
+                Thread.sleep(Duration.ofMillis(avgResponseTimeMillis)); // 3
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
@@ -38,21 +39,21 @@ public class LittleLawExample {
 
     static void benchmark(String type, ExecutorService executor, Runnable task,
                           int numTasks) {
-        Instant start = Instant.now(); // ④
+        Instant start = Instant.now(); // 4 запоминаем начало таймера
         AtomicLong completedTasks = new AtomicLong();
 
-        try (executor) { // ⑤
+        try (executor) { // 5
             IntStream.range(0, numTasks)
                 .forEach(i -> executor.submit(() -> {
                     task.run();
-                    completedTasks.incrementAndGet(); // ⑥
+                    completedTasks.incrementAndGet(); // 6
                 }));
-        } // ⑦
+        } // 7
 
         Instant end = Instant.now();
         long duration = Duration.between(start, end).toMillis();
         // Tasks per second
-        double throughput = (double) completedTasks.get() / duration * 1000; // ⑧
+        double throughput = (double) completedTasks.get() / duration * 1000; // 8
 
         System.out.printf("%-25s - Time: %5dms, Throughput: %8.2f tasks/s%n", type, duration, throughput);
     }
