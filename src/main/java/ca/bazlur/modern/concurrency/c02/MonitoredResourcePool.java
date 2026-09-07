@@ -9,11 +9,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class MonitoredResourcePool {
 
     private final Semaphore semaphore;
-    private final AtomicInteger activeConnections; // ①
-    private final AtomicInteger peakConnections; // ②
+    private final AtomicInteger activeConnections; // 1 Мониторинг активных подключений
+    private final AtomicInteger peakConnections; // 2 Информация о периодах пиковой нагрузки критически важна для планирования ресурсов
 
     public MonitoredResourcePool(int resourceCount) {
-        this.semaphore = new Semaphore(resourceCount, true); // ③
+        // 3 Справедливое распределение предотвращает голодание (starvation) потоков в сценариях высокой конкурентности.
+        this.semaphore = new Semaphore(resourceCount, true);
         this.activeConnections = new AtomicInteger(0);
         this.peakConnections = new AtomicInteger(0);
     }
@@ -21,13 +22,14 @@ public class MonitoredResourcePool {
     public Optional<String> useResource(String query) {
         boolean acquired = false;
         try {
-            acquired = semaphore.tryAcquire(5, TimeUnit.SECONDS); // ④
+            // 4 Тайм-ауты исключают бесконечную блокировку и повышают отказоустойчивость
+            acquired = semaphore.tryAcquire(5, TimeUnit.SECONDS);
             if (!acquired) {
-                return Optional.empty(); // ⑤
+                return Optional.empty(); // 5 если получить ресурс не удалось
             }
 
             int current = activeConnections.incrementAndGet();
-            peakConnections.updateAndGet(peak -> Math.max(peak, current)); // ⑥
+            peakConnections.updateAndGet(peak -> Math.max(peak, current)); // обновление через атомарные операции
 
             return queryDatabase(query);
         } catch (InterruptedException e) {
@@ -46,7 +48,7 @@ public class MonitoredResourcePool {
     }
 
     public int getPeakConnections() {
-        return peakConnections.get(); // ⑦
+        return peakConnections.get(); // 7 получение метрик для обеспечения наблюдательности
     }
 
     private Optional<String> queryDatabase(String query) {

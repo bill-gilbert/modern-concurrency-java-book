@@ -1,9 +1,9 @@
 package ca.bazlur.modern.concurrency.c02;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class ResourcePoolTest {
 
@@ -28,16 +28,13 @@ public class ResourcePoolTest {
         if (result.isPresent()) {
           successCount++;
         } else {
-          timeoutCount++; // ①
+          timeoutCount++; // 1. Отслеживание тайм-аутов помогает выяснить, как ведет себя система под нагрузкой.
         }
       }
 
-      System.out.printf("""
-              requests  : %d
-              successful: %d
-              timed-out : %d
-              peak usage: %d%n""",
-          totalRequests, successCount, timeoutCount, pool.getPeakConnections());// ②
+      System.out.printf("requests  : %d successful: %d timed-out : %d peak usage: %d%n",
+          totalRequests, successCount, timeoutCount, pool.getPeakConnections());// 2. Пиковое количество подключений
+        // подтверждает корректность работы ограничения.
 
       assert pool.getPeakConnections() <= maxConcurrentThreads
           : "Peak connections exceeded limit!";
