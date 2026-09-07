@@ -11,11 +11,11 @@ import java.util.stream.IntStream;
 public class ResourceAwareRateLimitExample {
 
     private static final HttpClient CLIENT = HttpClient.newBuilder()
-        .connectTimeout(Duration.ofSeconds(10)) // ①
+        .connectTimeout(Duration.ofSeconds(10)) // конфигурация HTTP клиента
         .build();
 
-    private static final int MAX_PARALLEL = 10; // ②
-    private static final Semaphore gate = new Semaphore(MAX_PARALLEL); // ③
+    private static final int MAX_PARALLEL = 10; // максимальное количество параллельных потоков
+    private static final Semaphore gate = new Semaphore(MAX_PARALLEL); // ограничитель скорости
     private static final String API_URL =
         "https://api.chucknorris.io/jokes/random";
 
