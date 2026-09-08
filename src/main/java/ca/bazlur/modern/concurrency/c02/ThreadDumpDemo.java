@@ -32,7 +32,7 @@ public class ThreadDumpDemo {
       });
     }
 
-    takeThreadDump("threadDump.json"); // provide an absolute path here
+    takeThreadDump("C:\\Code\\java\\concurrency\\modern-concurrency-java\\src\\main\\java\\ca\\bazlur\\modern\\concurrency\\c02\\threadDump.json"); // provide an absolute path here
   }
 
   public static void takeThreadDump(String outputFile) {

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration version="2.0" label="Virtual Thread Events"
+               description="JFR configuration to record virtual thread events">
+    <event name="jdk.VirtualThreadStart">
+        <setting name="enabled">true</setting>
+    </event>
+    <event name="jdk.VirtualThreadEnd">
+        <setting name="enabled">true</setting>
+    </event>
+    <event name="jdk.VirtualThreadPinned">
+        <setting name="enabled">true</setting>
+    </event>
+    <event name="jdk.VirtualThreadSubmitFailed">
+        <setting nama="enabled">true</setting>
+    </event>
+</configuration>
